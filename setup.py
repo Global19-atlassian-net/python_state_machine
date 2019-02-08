@@ -13,17 +13,17 @@ def get_packages():
 
 required_modules = []
 
-setup(name='state_machine',
-      version='0.2.10',
-      description='Python State Machines for Humans',
-      url='http://github.com/jtushman/state_machine',
-      author='Jonathan Tushman',
-      author_email='jonathan@zefr.com',
+setup(name='basic_state_machine',
+      version='0.0.1',
+      description='Simple Python State Machines',
+      url='https://github.com/girante/basic_state_machine',
+      author='Ricardo Rodrigues',
+      author_email='r.rodrigues@coboc.biz',
       install_requires=required_modules,
       license='MIT',
       packages=get_packages(),
       zip_safe=False,
-      tests_require=['nose', 'pymongo'],
+      tests_require=['nose'],
       test_suite='nose.collector',
       classifiers=[
           'Intended Audience :: Developers',

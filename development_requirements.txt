@@ -1,4 +1,1 @@
 nose
-pymongo
-mongoengine
-sqlalchemy

@@ -33,3 +33,11 @@ class Event(object):
             self.from_states = tuple(from_state_args)
         else:
             self.from_states = (from_state_args,)
+        self.parameters = tuple()
+        parameters_args = kwargs.get('parameters', tuple())
+        if isinstance(parameters_args, (tuple, list)):
+            self.parameters = tuple(parameters_args)
+        else:
+            self.parameters = (parameters_args,)
+
+        
