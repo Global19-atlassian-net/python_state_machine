@@ -12,7 +12,7 @@ def get_callback_cache():
     return _temp_callback_cache
 
 def get_function_name(frame):
-    return inspect.getframeinfo(frame.f_back.f_back).function
+    return inspect.getframeinfo(frame.f_back).function
 
 
 def calculate(parameter=None):
