@@ -1,17 +1,11 @@
 from __future__ import absolute_import
 
-from state_machine.orm.base import BaseAdaptor
+from python_state_machine.orm.base import BaseAdaptor
 
-_adaptors = []
 
 def get_adaptor(original_class):
     # if none, then just keep state in memory
-    for get_adaptor in _adaptors:
-        adaptor = get_adaptor(original_class)
-        if adaptor is not None:
-            break
-    else:
-        adaptor = NullAdaptor(original_class)
+    adaptor = NullAdaptor(original_class)
     return adaptor
 
 

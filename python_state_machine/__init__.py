@@ -1,7 +1,7 @@
 import inspect
 
-from state_machine.models import Event, State, InvalidStateTransition
-from state_machine.orm import get_adaptor
+from python_state_machine.models import Event, State, InvalidStateTransition, AbortStateTransition
+from python_state_machine.orm import get_adaptor
 
 _temp_callback_cache = None
 
@@ -12,16 +12,29 @@ def get_callback_cache():
     return _temp_callback_cache
 
 def get_function_name(frame):
-    return inspect.getouterframes(frame)[1][3]
+    return inspect.getframeinfo(frame.f_back.f_back).function
 
-def before(before_what):
+
+def calculate(parameter=None):
     def wrapper(func):
         frame = inspect.currentframe()
         calling_class = get_function_name(frame)
 
-        calling_class_dict = get_callback_cache().setdefault(calling_class, {'before': {}, 'after': {}})
-        calling_class_dict['before'].setdefault(before_what, []).append(func)
+        calling_class_dict = get_callback_cache().setdefault(calling_class, {'before': {}, 'after': {}, 'calculate': {}})
+        calling_class_dict['calculate'].setdefault(func.__name__, []).append(parameter)
 
+        return func
+
+    return wrapper
+
+def before(*before_what):
+    def wrapper(func):
+        frame = inspect.currentframe()
+        calling_class = get_function_name(frame)
+
+        calling_class_dict = get_callback_cache().setdefault(calling_class, {'before': {}, 'after': {}, 'calculate': {}})
+        for what in before_what:
+            calling_class_dict['before'].setdefault(what, []).append(func)
         return func
 
     return wrapper
@@ -33,7 +46,7 @@ def after(after_what):
         frame = inspect.currentframe()
         calling_class = get_function_name(frame)
 
-        calling_class_dict = get_callback_cache().setdefault(calling_class, {'before': {}, 'after': {}})
+        calling_class_dict = get_callback_cache().setdefault(calling_class, {'before': {}, 'after': {}, 'calculate': {}})
         calling_class_dict['after'].setdefault(after_what, []).append(func)
 
         return func

@@ -1,6 +1,5 @@
-from __future__ import absolute_import
 import inspect
-from state_machine.models import Event, State, InvalidStateTransition
+from python_state_machine.models import Event, State, InvalidStateTransition, AbortStateTransition
 
 
 class BaseAdaptor(object):
@@ -45,21 +44,46 @@ class BaseAdaptor(object):
                 # Create event methods
 
                 def event_meta_method(event_name, event_description):
-                    def f(self):
+                    def f(self, *args, **kwargs):
                         #assert current state
                         if self.current_state not in event_description.from_states:
-                            raise InvalidStateTransition
+                            raise InvalidStateTransition(self.current_state, event_description.to_state.name)
+
+                        par_list_def_size = len(event_description.parameters)
+                        par_list_size = len(args)+len(kwargs)
+                        if par_list_def_size > par_list_size:
+                            missing = set(event_description.parameters[len(args):])
+                            missing = missing.difference(set(kwargs))
+                            raise TypeError("missing parameter(s)", missing)
+                        elif par_list_def_size < par_list_size:
+                            print(event_description.parameters)
+                            print(args)
+                            print(kwargs)
+                            raise TypeError("parameters lists don't match")
 
                         # fire before_change
                         failed = False
-                        if self.__class__.callback_cache and \
-                                event_name in self.__class__.callback_cache[_adaptor.original_class.__name__]['before']:
-                            for callback in self.__class__.callback_cache[_adaptor.original_class.__name__]['before'][event_name]:
-                                result = callback(self, *event_description.arguments)
-                                if result is False:
-                                    print("One of the 'before' callbacks returned false, breaking")
-                                    failed = True
-                                    break
+                        additional_parameters = {}
+                        callback_cache = self.__class__.callback_cache[_adaptor.original_class.__name__]                        
+                        if self.__class__.callback_cache:
+                            callback_cache = self.__class__.callback_cache[_adaptor.original_class.__name__]
+                            if event_name in callback_cache['before']:
+
+                                for validator in callback_cache['before'][event_name]:
+                                    result = None
+                                    try:
+                                        result = validator(self, *args, **kwargs)
+                                        #if validator["result"] is not None:
+                                        if validator.__name__ in callback_cache['calculate']:
+                                            arguments = callback_cache['calculate'][validator.__name__]
+                                            for arg in arguments:
+                                                additional_parameters[arg] = result
+                                            
+                                    except AbortStateTransition as ae:
+                                        print("Transition validator {0}.{1} aborted the transition: {2}".format(event_name, validator.__name__, ae))
+                                        failed = True
+                                        break
+
 
                         #change state
                         if not failed:
@@ -69,7 +93,9 @@ class BaseAdaptor(object):
                             if self.__class__.callback_cache and \
                                     event_name in self.__class__.callback_cache[_adaptor.original_class.__name__]['after']:
                                 for callback in self.__class__.callback_cache[_adaptor.original_class.__name__]['after'][event_name]:
-                                    callback(self, *event_description.arguments)
+                                    if event_description is not None:
+                                        callback(self, *args, **kwargs, **additional_parameters)
+                                        
 
                     return f
 

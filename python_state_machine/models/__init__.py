@@ -4,8 +4,17 @@ except NameError:
     string_type = str
 
 class InvalidStateTransition(Exception):
-    pass
+    def __init__(self, current, unreachable):
+        super().__init__("Invalid state transition from", current, "to", unreachable)
 
+class AbortStateTransition(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+def wrap_with_tuple(what):
+    if isinstance(what, (tuple, list)):
+        return tuple(what)
+    return (what,)
 
 class State(object):
     def __init__(self, initial=False, **kwargs):
@@ -19,7 +28,6 @@ class State(object):
         else:
             return False
 
-
     def __ne__(self, other):
         return not self == other
 
@@ -27,17 +35,6 @@ class State(object):
 class Event(object):
     def __init__(self, **kwargs):
         self.to_state = kwargs.get('to_state', None)
-        self.from_states = tuple()
-        from_state_args = kwargs.get('from_states', tuple())
-        if isinstance(from_state_args, (tuple, list)):
-            self.from_states = tuple(from_state_args)
-        else:
-            self.from_states = (from_state_args,)
-        self.parameters = tuple()
-        parameters_args = kwargs.get('parameters', tuple())
-        if isinstance(parameters_args, (tuple, list)):
-            self.parameters = tuple(parameters_args)
-        else:
-            self.parameters = (parameters_args,)
-
+        self.from_states = wrap_with_tuple(kwargs.get('from_states', tuple()))
+        self.parameters = wrap_with_tuple(kwargs.get('parameters', tuple()))
         
