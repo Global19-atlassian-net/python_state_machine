@@ -5,7 +5,7 @@ from nose.plugins.skip import SkipTest
 from nose.tools import *
 from nose.tools import assert_raises
 
-from state_machine import acts_as_state_machine, before, State, Event, after, InvalidStateTransition
+from python_state_machine import acts_as_state_machine, before, State, Event, after, InvalidStateTransition
 
 
 ###################################################################################

@@ -17,7 +17,7 @@ Install
 
 .. code:: bash
 
-    pip install state_machine
+    pip install python_state_machine
 
 .. |Build Status| image:: https://travis-ci.org/jtushman/state_machine.svg?branch=master
    :target: https://travis-ci.org/jtushman/state_machine
@@ -186,8 +186,6 @@ Thank you
 to `aasm`_ and ruby’s `state\_machine`_ and all other state machines
 that I loved before
 
-.. _aasm: https://github.com/aasm/aasm
-.. _state\_machine: https://github.com/pluginaweek/state_machine
 
 Contents:
 

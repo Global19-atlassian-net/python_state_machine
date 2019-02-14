@@ -1,7 +1,7 @@
-state\_machine
+python\_state\_machine
 ==============
 
-state machine for humans ()
+Basic python state machine with no added extensions 
 
 |Build Status|
 
@@ -14,7 +14,7 @@ Install
 
 .. code:: bash
 
-    pip install basic_state_machine
+    pip install python_state_machine
 
 .. |Build Status| image:: https://travis-ci.org/jtushman/state_machine.svg?branch=master
    :target: https://travis-ci.org/jtushman/state_machine
@@ -100,7 +100,7 @@ None. If you need it, please use Jonathan Tushman's `state\_machine`
 Questions / Issues
 ------------------
 
-or add issues or PRs at https://github.com/girante/basic_state_machine
+or add issues or PRs at https://github.com/girante/python_state_machine
 
 Thank you
 ---------

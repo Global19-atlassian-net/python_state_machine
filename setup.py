@@ -5,7 +5,7 @@ from setuptools import setup
 def get_packages():
     # setuptools can't do the job :(
     packages = []
-    for root, dirnames, filenames in os.walk('state_machine'):
+    for root, dirnames, filenames in os.walk('python_state_machine'):
         if '__init__.py' in filenames:
             packages.append(".".join(os.path.split(root)).strip("."))
 
@@ -13,10 +13,10 @@ def get_packages():
 
 required_modules = []
 
-setup(name='basic_state_machine',
-      version='0.0.1',
+setup(name='python_state_machine',
+      version='0.0.14',
       description='Simple Python State Machines',
-      url='https://github.com/girante/basic_state_machine',
+      url='https://github.com/girante/python_state_machine',
       author='Ricardo Rodrigues',
       author_email='r.rodrigues@coboc.biz',
       install_requires=required_modules,
