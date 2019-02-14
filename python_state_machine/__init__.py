@@ -12,13 +12,13 @@ def get_callback_cache():
     return _temp_callback_cache
 
 def get_function_name(frame):
-    return inspect.getframeinfo(frame.f_back).function
+    name = func.__qualname__
+    return name[:name.rfind(".")]
 
 
 def calculate(parameter=None):
     def wrapper(func):
-        frame = inspect.currentframe()
-        calling_class = get_function_name(frame)
+        calling_class = get_function_name(func)
 
         calling_class_dict = get_callback_cache().setdefault(calling_class, {'before': {}, 'after': {}, 'calculate': {}})
         calling_class_dict['calculate'].setdefault(func.__name__, []).append(parameter)
@@ -29,8 +29,7 @@ def calculate(parameter=None):
 
 def before(*before_what):
     def wrapper(func):
-        frame = inspect.currentframe()
-        calling_class = get_function_name(frame)
+        calling_class = get_function_name(func)
 
         calling_class_dict = get_callback_cache().setdefault(calling_class, {'before': {}, 'after': {}, 'calculate': {}})
         for what in before_what:
@@ -42,9 +41,7 @@ def before(*before_what):
 
 def after(after_what):
     def wrapper(func):
-
-        frame = inspect.currentframe()
-        calling_class = get_function_name(frame)
+        calling_class = get_function_name(func)
 
         calling_class_dict = get_callback_cache().setdefault(calling_class, {'before': {}, 'after': {}, 'calculate': {}})
         calling_class_dict['after'].setdefault(after_what, []).append(func)
