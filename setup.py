@@ -14,7 +14,7 @@ def get_packages():
 required_modules = []
 
 setup(name='python_state_machine',
-      version='0.0.15',
+      version='0.0.18',
       description='Simple Python State Machines',
       url='https://github.com/girante/python_state_machine',
       author='Ricardo Rodrigues',
